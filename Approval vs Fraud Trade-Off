@@ -1,0 +1,27 @@
+country_analysis['fraud_rate'].sort_values(
+    ascending=False
+).plot(
+    kind='bar'
+)
+
+plt.title(
+    "Fraud Rate by Country"
+)
+
+plt.show()
+
+approval_fraud = (
+
+    df.groupby(
+        "approved"
+    )
+
+    .agg(
+
+        fraud=('fraud_flag','sum'),
+
+        transactions=('transaction_id','count')
+    )
+)
+
+approval_fraud

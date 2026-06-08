@@ -1,0 +1,187 @@
+import pandas as pd
+import numpy as np
+
+from sklearn.metrics import confusion_matrix
+preds = pd.read_csv(
+    "../outputs/model_results/model_predictions.csv"
+)
+
+preds.head()
+def evaluate_threshold(
+    threshold
+):
+
+    predicted = np.where(
+
+        preds["fraud_probability"]
+        >= threshold,
+
+        1,
+
+        0
+    )
+
+    tn, fp, fn, tp = confusion_matrix(
+
+        preds["actual_fraud"],
+
+        predicted
+
+    ).ravel()
+
+    approval_rate = (
+
+        (tn + fn)
+
+        /
+
+        len(preds)
+
+    ) * 100
+
+    fraud_capture_rate = (
+
+        tp
+
+        /
+
+        (tp + fn)
+
+    ) * 100
+
+    false_positive_rate = (
+
+        fp
+
+        /
+
+        (fp + tn)
+
+    ) * 100
+
+    return [
+
+        threshold,
+
+        approval_rate,
+
+        fraud_capture_rate,
+
+        false_positive_rate
+
+    ]
+results = []
+
+for threshold in [
+
+    0.10,
+    0.20,
+    0.30,
+    0.40,
+    0.50,
+    0.60,
+    0.70,
+    0.80
+
+]:
+
+    results.append(
+
+        evaluate_threshold(
+            threshold
+        )
+    )
+threshold_results = pd.DataFrame(
+
+    results,
+
+    columns=[
+
+        "Threshold",
+
+        "Approval_Rate",
+
+        "Fraud_Capture_Rate",
+
+        "False_Positive_Rate"
+    ]
+)
+
+threshold_results
+
+import matplotlib.pyplot as plt
+
+plt.figure(
+    figsize=(10,6)
+)
+
+plt.plot(
+
+    threshold_results["Threshold"],
+
+    threshold_results["Approval_Rate"],
+
+    marker="o",
+
+    label="Approval Rate"
+)
+
+plt.plot(
+
+    threshold_results["Threshold"],
+
+    threshold_results["Fraud_Capture_Rate"],
+
+    marker="o",
+
+    label="Fraud Capture"
+)
+
+plt.legend()
+
+plt.title(
+    "Approval vs Fraud Capture"
+)
+
+plt.xlabel(
+    "Threshold"
+)
+
+plt.ylabel(
+    "%"
+)
+
+plt.show()
+plt.figure(
+    figsize=(10,6)
+)
+
+plt.plot(
+
+    threshold_results["Threshold"],
+
+    threshold_results["False_Positive_Rate"],
+
+    marker="o"
+)
+
+plt.title(
+    "False Positive Rate by Threshold"
+)
+
+plt.xlabel(
+    "Threshold"
+)
+
+plt.ylabel(
+    "%"
+)
+
+plt.show()
+optimal = threshold_results.loc[
+    threshold_results[
+        "Fraud_Capture_Rate"
+    ].idxmax()
+]
+
+optimal

@@ -1,0 +1,11 @@
+def risk_band(score):
+
+    if score < 0.30:
+        return "Low"
+
+    elif score < 0.70:
+        return "Medium"
+
+    return "High"
+
+df["risk_band"] = df["risk_score"].apply(risk_band)

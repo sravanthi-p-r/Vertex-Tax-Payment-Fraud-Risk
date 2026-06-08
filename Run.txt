@@ -1,0 +1,11 @@
+----How to Run--------
+
+mkdir tax-payment-fraud-analytics
+
+cd payment-fraud-analytics
+
+pip install -r requirements.txt
+
+python src/generate_data.py
+
+python src/preprocess.py

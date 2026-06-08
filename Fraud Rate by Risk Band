@@ -1,0 +1,17 @@
+risk_fraud = (
+
+    df.groupby("risk_band")
+      .agg(
+        transactions=('transaction_id','count'),
+        fraud=('fraud_flag','sum')
+      )
+)
+
+risk_fraud["fraud_rate"] = (
+
+    risk_fraud["fraud"] /
+    risk_fraud["transactions"]
+
+) * 100
+
+risk_fraud

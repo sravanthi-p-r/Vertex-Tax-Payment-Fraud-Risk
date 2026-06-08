@@ -1,0 +1,26 @@
+approval_summary = pd.DataFrame({
+
+    "Status": [
+        "Approved",
+        "Declined"
+    ],
+
+    "Count": [
+        df['approved'].sum(),
+        len(df)-df['approved'].sum()
+    ]
+})
+
+approval_summary
+
+plt.figure(figsize=(6,4))
+
+sns.barplot(
+    x="Status",
+    y="Count",
+    data=approval_summary
+)
+
+plt.title("Approval vs Decline Distribution")
+
+plt.show()

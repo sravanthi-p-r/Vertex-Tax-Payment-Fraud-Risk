@@ -1,0 +1,39 @@
+Vertex-tax-payment-fraud-analytics/
+
+├── README.md
+├── requirements.txt
+├── .gitignore
+
+├── data/
+│   ├── raw/
+│   ├── processed/
+│   └── synthetic_transactions.csv
+
+├── notebooks/
+│   ├── 01_EDA.ipynb
+│   ├── 02_Feature_Engineering.ipynb
+│   ├── 03_Model_Training.ipynb
+│   └── 04_Threshold_Optimization.ipynb
+
+├── src/
+│   ├── generate_data.py
+│   ├── preprocess.py
+│   ├── feature_engineering.py
+│   ├── train_model.py
+│   ├── threshold_analysis.py
+│   └── dashboard_metrics.py
+
+├── sql/
+│   ├── fraud_kpis.sql
+│   ├── approval_metrics.sql
+│   └── risk_segmentation.sql
+
+├── dashboard/
+│   └── fraud_dashboard.pbix
+
+├── presentation/
+│   └── Fraud_Strategy_Recommendations.pptx
+
+└── outputs/
+    ├── charts/
+    └── model_results/

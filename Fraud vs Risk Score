@@ -1,0 +1,13 @@
+plt.figure(figsize=(10,5))
+
+sns.boxplot(
+    x='fraud_flag',
+    y='risk_score',
+    data=df
+)
+
+plt.title(
+    "Risk Score by Fraud Status"
+)
+
+plt.show()

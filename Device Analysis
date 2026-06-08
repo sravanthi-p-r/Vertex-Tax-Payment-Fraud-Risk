@@ -1,0 +1,25 @@
+device_analysis = (
+
+    df.groupby("device_type")
+
+    .agg(
+
+        transactions=('transaction_id','count'),
+
+        fraud=('fraud_flag','sum'),
+
+        chargebacks=('chargeback','sum')
+    )
+)
+
+device_analysis["fraud_rate"] = (
+
+    device_analysis["fraud"]
+
+    /
+
+    device_analysis["transactions"]
+
+) * 100
+
+device_analysis

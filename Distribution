@@ -1,0 +1,16 @@
+risk_distribution = (
+    df['risk_band']
+    .value_counts()
+)
+
+risk_distribution
+
+risk_distribution.plot(
+    kind='bar'
+)
+
+plt.title(
+    "Risk Band Distribution"
+)
+
+plt.show()

@@ -1,0 +1,25 @@
+country_analysis = (
+
+    df.groupby("country")
+
+    .agg(
+
+        transactions=('transaction_id','count'),
+
+        fraud=('fraud_flag','sum'),
+
+        chargebacks=('chargeback','sum')
+    )
+)
+
+country_analysis["fraud_rate"] = (
+
+    country_analysis["fraud"]
+
+    /
+
+    country_analysis["transactions"]
+
+) * 100
+
+country_analysis

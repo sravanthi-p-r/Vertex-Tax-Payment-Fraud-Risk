@@ -1,0 +1,27 @@
+total_transactions = len(df)
+
+approved_transactions = df['approved'].sum()
+
+fraud_transactions = df['fraud_flag'].sum()
+
+chargebacks = df['chargeback'].sum()
+
+approval_rate = (
+    approved_transactions /
+    total_transactions
+) * 100
+
+fraud_rate = (
+    fraud_transactions /
+    total_transactions
+) * 100
+
+chargeback_rate = (
+    chargebacks /
+    total_transactions
+) * 100
+
+print(f"Total Transactions: {total_transactions:,}")
+print(f"Approval Rate: {approval_rate:.2f}%")
+print(f"Fraud Rate: {fraud_rate:.2f}%")
+print(f"Chargeback Rate: {chargeback_rate:.2f}%")

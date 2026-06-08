@@ -1,0 +1,115 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+pd.set_option('display.max_columns', None)
+df = pd.read_csv("../data/synthetic_transactions.csv")
+
+print(df.shape)
+
+df.head()
+df["customer_txn_count"] = (
+    df.groupby("customer_id")
+      ["transaction_id"]
+      .transform("count")
+)
+df["customer_avg_amount"] = (
+    df.groupby("customer_id")
+      ["amount"]
+      .transform("mean")
+)df["amount_vs_customer_avg"] = (
+    df["amount"] /
+    df["customer_avg_amount"]
+)amount_threshold = (
+    df["amount"]
+    .quantile(0.95)
+)
+
+df["high_amount_flag"] = np.where(
+    df["amount"] > amount_threshold,
+    1,
+    0
+)df["merchant_txn_count"] = (
+    df.groupby("merchant_id")
+      ["transaction_id"]
+      .transform("count")
+)df["merchant_fraud_rate"] = (
+    df.groupby("merchant_id")
+      ["fraud_flag"]
+      .transform("mean")
+)df["country_fraud_rate"] = (
+    df.groupby("country")
+      ["fraud_flag"]
+      .transform("mean")
+)df["device_fraud_rate"] = (
+    df.groupby("device_type")
+      ["fraud_flag"]
+      .transform("mean")
+)country_risk = (
+    df.groupby("country")
+      ["fraud_flag"]
+      .mean()
+)
+
+high_risk_countries = (
+    country_risk[
+        country_risk > country_risk.mean()
+    ]
+    .index
+)
+
+df["high_risk_country"] = np.where(
+    df["country"].isin(high_risk_countries),
+    1,
+    0
+)device_risk = (
+    df.groupby("device_type")
+      ["fraud_flag"]
+      .mean()
+)
+
+high_risk_devices = (
+    device_risk[
+        device_risk > device_risk.mean()
+    ]
+    .index
+)
+
+df["high_risk_device"] = np.where(
+    df["device_type"].isin(high_risk_devices),
+    1,
+    0
+)df.to_csv(
+    "../data/processed/transactions_features.csv",
+    index=False
+)
+
+print(df.shape)
+
+
+numeric_cols = [
+    "amount",
+    "risk_score",
+    "customer_txn_count",
+    "amount_vs_customer_avg",
+    "merchant_fraud_rate",
+    "country_fraud_rate",
+    "device_fraud_rate",
+    "fraud_flag"
+]
+
+corr = (
+    df[numeric_cols]
+    .corr()
+)
+
+plt.figure(figsize=(10,8))
+
+sns.heatmap(
+    corr,
+    annot=True,
+    cmap="coolwarm"
+)
+
+plt.show()

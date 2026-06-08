@@ -1,0 +1,24 @@
+fraud_summary = pd.DataFrame({
+
+    "Class": [
+        "Legitimate",
+        "Fraud"
+    ],
+
+    "Count": [
+        len(df)-df['fraud_flag'].sum(),
+        df['fraud_flag'].sum()
+    ]
+})
+
+plt.figure(figsize=(6,4))
+
+sns.barplot(
+    x="Class",
+    y="Count",
+    data=fraud_summary
+)
+
+plt.title("Fraud Transaction Distribution")
+
+plt.show()

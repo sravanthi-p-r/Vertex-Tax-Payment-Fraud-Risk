@@ -1,0 +1,9 @@
+device_analysis['fraud_rate'].plot(
+    kind='bar'
+)
+
+plt.title(
+    "Fraud Rate by Device"
+)
+
+plt.show()

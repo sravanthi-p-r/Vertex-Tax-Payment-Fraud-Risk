@@ -1,0 +1,26 @@
+customer_risk = (
+
+    df.groupby(
+        "is_new_customer"
+    )
+    .agg(
+
+        transactions=('transaction_id','count'),
+
+        fraud=('fraud_flag','sum'),
+
+        approvals=('approved','sum')
+    )
+)
+
+customer_risk
+
+customer_risk["fraud_rate"] = (
+
+    customer_risk["fraud"] /
+
+    customer_risk["transactions"]
+
+) * 100
+
+customer_risk

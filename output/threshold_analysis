@@ -1,0 +1,50 @@
+import os
+import pandas as pd
+import numpy as np
+from sklearn.metrics import confusion_matrix
+
+OUTPUT_DIR = "../outputs/model_results"
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+df = pd.read_csv("../outputs/model_results/model_predictions.csv")
+
+def evaluate_threshold(threshold):
+    predicted = np.where(
+        df["fraud_probability"] >= threshold,
+        1,
+        0
+    )
+
+    tn, fp, fn, tp = confusion_matrix(
+        df["actual_fraud"],
+        predicted
+    ).ravel()
+
+    approval_rate = ((tn + fn) / len(df)) * 100
+    fraud_capture_rate = (tp / (tp + fn)) * 100
+    false_positive_rate = (fp / (fp + tn)) * 100
+
+    return {
+        "threshold": threshold,
+        "true_negatives": tn,
+        "false_positives": fp,
+        "false_negatives": fn,
+        "true_positives": tp,
+        "approval_rate": round(approval_rate, 2),
+        "fraud_capture_rate": round(fraud_capture_rate, 2),
+        "false_positive_rate": round(false_positive_rate, 2)
+    }
+
+results = []
+
+for threshold in np.arange(0.10, 0.91, 0.10):
+    results.append(evaluate_threshold(round(threshold, 2)))
+
+threshold_results = pd.DataFrame(results)
+
+threshold_results.to_csv(
+    f"{OUTPUT_DIR}/threshold_results.csv",
+    index=False
+)
+
+print(threshold_results)

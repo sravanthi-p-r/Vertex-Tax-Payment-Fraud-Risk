@@ -1,0 +1,92 @@
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+
+CHART_DIR = "../outputs/charts"
+os.makedirs(CHART_DIR, exist_ok=True)
+
+df = pd.read_csv("../data/processed/transactions_features.csv")
+
+df["risk_bucket"] = pd.cut(
+    df["risk_score"],
+    bins=[0, 0.2, 0.4, 0.6, 0.8, 1],
+    labels=["0-20", "20-40", "40-60", "60-80", "80-100"]
+)
+
+# 1. Transaction amount distribution
+plt.figure(figsize=(8, 5))
+plt.hist(df["amount"], bins=50)
+plt.title("Transaction Amount Distribution")
+plt.xlabel("Amount")
+plt.ylabel("Transaction Count")
+plt.tight_layout()
+plt.savefig(f"{CHART_DIR}/transaction_distribution.png")
+plt.close()
+
+# 2. Risk score distribution
+plt.figure(figsize=(8, 5))
+plt.hist(df["risk_score"], bins=40)
+plt.title("Risk Score Distribution")
+plt.xlabel("Risk Score")
+plt.ylabel("Transaction Count")
+plt.tight_layout()
+plt.savefig(f"{CHART_DIR}/risk_score_distribution.png")
+plt.close()
+
+# 3. Fraud by risk bucket
+fraud_by_risk = df.groupby("risk_bucket")["fraud_flag"].mean() * 100
+plt.figure(figsize=(8, 5))
+fraud_by_risk.plot(kind="bar")
+plt.title("Fraud Rate by Risk Bucket")
+plt.xlabel("Risk Bucket")
+plt.ylabel("Fraud Rate %")
+plt.tight_layout()
+plt.savefig(f"{CHART_DIR}/fraud_by_risk_bucket.png")
+plt.close()
+
+# 4. Fraud by country
+fraud_by_country = df.groupby("country")["fraud_flag"].mean().sort_values(ascending=False) * 100
+plt.figure(figsize=(8, 5))
+fraud_by_country.plot(kind="bar")
+plt.title("Fraud Rate by Country")
+plt.xlabel("Country")
+plt.ylabel("Fraud Rate %")
+plt.tight_layout()
+plt.savefig(f"{CHART_DIR}/fraud_by_country.png")
+plt.close()
+
+# 5. Fraud by device
+fraud_by_device = df.groupby("device_type")["fraud_flag"].mean().sort_values(ascending=False) * 100
+plt.figure(figsize=(8, 5))
+fraud_by_device.plot(kind="bar")
+plt.title("Fraud Rate by Device Type")
+plt.xlabel("Device Type")
+plt.ylabel("Fraud Rate %")
+plt.tight_layout()
+plt.savefig(f"{CHART_DIR}/fraud_by_device.png")
+plt.close()
+
+# 6. New vs existing customer fraud
+new_customer_fraud = df.groupby("is_new_customer")["fraud_flag"].mean() * 100
+new_customer_fraud.index = ["Existing Customer", "New Customer"]
+plt.figure(figsize=(8, 5))
+new_customer_fraud.plot(kind="bar")
+plt.title("Fraud Rate: New vs Existing Customers")
+plt.xlabel("Customer Type")
+plt.ylabel("Fraud Rate %")
+plt.tight_layout()
+plt.savefig(f"{CHART_DIR}/new_customer_fraud.png")
+plt.close()
+
+# 7. Chargeback by risk bucket
+chargeback_by_risk = df.groupby("risk_bucket")["chargeback"].mean() * 100
+plt.figure(figsize=(8, 5))
+chargeback_by_risk.plot(kind="bar")
+plt.title("Chargeback Rate by Risk Bucket")
+plt.xlabel("Risk Bucket")
+plt.ylabel("Chargeback Rate %")
+plt.tight_layout()
+plt.savefig(f"{CHART_DIR}/chargeback_by_risk_bucket.png")
+plt.close()
+
+print("Charts saved successfully.")
